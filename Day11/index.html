@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Button Click Tracker</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+		function Click(){
+	let i=0;
+	return function(){
+		return i++;
+		console.log(`Button clicked ${i} times`);
+		};
+}
+
+
+        // Dynamically create the button
+        const button = document.createElement('button');
+        button.textContent = 'Click Me!';
+
+        // Attach the click event handler using the closure
+        const handler = Click();
+        button.addEventListener('click', Click);
+
+        // Append the button to the body
+        document.body.appendChild(button);
+    </script>
+</body>
+</html>
