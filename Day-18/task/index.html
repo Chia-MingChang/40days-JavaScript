@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原生 JavaScript 任務解決方案</title>
+    <style>
+        /* 基礎樣式和響應式設計 */
+        body {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+        }
+        h2 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        button {
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: 1px solid #aaa;
+            background-color: #f0f0f0;
+            transition: background-color 0.2s;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        input[type="text"], input[type="email"], input[type="number"], select {
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block; /* 確保動態表單中的輸入框獨佔一行 */
+            width: auto;
+            min-width: 200px;
+        }
+        
+        /* 任務 2 表格樣式 */
+        #dynamic-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        #dynamic-table th, #dynamic-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        #dynamic-table th {
+            background-color: #f2f2f2;
+        }
+        
+        /* 確保動態表單的輸入框可以並排 */
+        .type-controls, .table-form-inputs {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* 響應式換行 */
+            margin-bottom: 15px;
+        }
+        .table-form-inputs input {
+            display: inline;
+            width: auto;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 所有的 UI 元素將由 JavaScript 動態創建和插入到 body 中 -->
+
+    <!-- 引入外部 JavaScript 檔案 -->
+    <script src="./script.js"></script>
+</body>
+</html>
