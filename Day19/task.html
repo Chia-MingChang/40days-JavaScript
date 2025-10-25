@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Tabbed Interface Demo</title>
+    <style>
+        /* Basic Reset and Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* Tabs Container */
+        .tabs {
+            width: 80%;
+            max-width: 700px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Ensures content doesn't spill out */
+        }
+
+        /* Tab Headers */
+        .tab-headers {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f8f8f8;
+        }
+
+        .tab {
+            flex: 1; /* Distribute space equally */
+            padding: 15px 20px;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border-radius: 8px 8px 0 0; /* Rounded top corners */
+        }
+
+        .tab:hover {
+            background-color: #e9e9e9;
+            color: #333;
+        }
+
+        /* Active Tab Header */
+        .tab.active {
+            color: #007bff; /* Primary blue for active tab */
+            border-bottom: 3px solid #007bff; /* Underline effect */
+            background-color: #ffffff;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
+        }
+
+        /* Tab Contents */
+        .tab-contents {
+            padding: 20px;
+        }
+
+        .content {
+            display: none; /* Hide all content by default */
+            padding: 15px;
+            border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+            background-color: #ffffff;
+            min-height: 100px; /* Give some minimum height */
+            line-height: 1.6;
+            color: #444;
+            animation: fadeIn 0.5s ease-out; /* Simple fade-in effect */
+        }
+
+        /* Active Tab Content */
+        .content.active {
+            display: block; /* Show active content */
+        }
+
+        /* Keyframe for fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Console Output Display (for demo purposes) */
+        #console-output {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 700px;
+            background-color: #282c34; /* Dark background like a real console */
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+            overflow-y: auto; /* Scroll if content is too long */
+            max-height: 200px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Dynamic Tabbed Interface</h1>
+
+    <div class="tabs">
+        <div class="tab-headers">
+            <button class="tab active" data-tab="1">Home</button>
+            <button class="tab" data-tab="2">About</button>
+            <button class="tab" data-tab="3">Contact</button>
+        </div>
+        <div class="tab-contents">
+            <div class="content active" data-tab="1">
+                <h2>Welcome to Home!</h2>
+                <p>This is the content for the Home tab. It's the first thing you see when you load the page. Feel free to explore other tabs or use the keyboard shortcuts (1, 2, 3).</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+            <div class="content" data-tab="2">
+                <h2>About Us</h2>
+                <p>Learn more about our mission and vision on this page.</p>
+                <p>We are dedicated to providing excellent services and innovative solutions. Our team consists of highly skilled professionals passionate about their work.</p>
+            </div>
+            <div class="content" data-tab="3">
+                <h2>Contact Information</h2>
+                <p>Reach out to us through the following channels:</p>
+                <ul>
+                    <li>Email: info@example.com</li>
+                    <li>Phone: +123 456 7890</li>
+                    <li>Address: 123 Tab Street, Web City, Internet</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h3>Console Output (Simulated)</h3>
+    <pre id="console-output"></pre>
+
+    <script>
+        // --- START OF JAVASCRIPT LOGIC (from your previous response) ---
+        /**
+         * 40 Days of JavaScript: Dynamic Tabbed Interface
+         *
+         * This script provides the logic for a tab component.
+         * It does not include CSS, but assumes CSS handles:
+         * 1. .tab.active for visual highlight of the active tab button.
+         * 2. .content.active for making the active tab content visible.
+         * 3. Hiding all .content elements by default.
+         */
+
+        // 1. Get DOM elements
+        const tabHeadersContainer = document.querySelector(".tab-headers");
+        const tabContentsContainer = document.querySelector(".tab-contents");
+        const tabButtons = document.querySelectorAll(".tab");
+        const tabContents = document.querySelectorAll(".content");
+        const tabsContainer = document.querySelector(".tabs"); // Needed for custom event listener
+        const consoleOutput = document.getElementById("console-output"); // Get the simulated console element
+
+        // Helper function to append to simulated console
+        function appendToConsole(message) {
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+            consoleOutput.textContent += `[${timeString}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight; // Scroll to bottom
+        }
+
+        // Override console.log to also append to our simulated console
+        const originalConsoleLog = console.log;
+        console.log = (...args) => {
+            originalConsoleLog(...args); // Still log to actual browser console
+            appendToConsole(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' '));
+        };
+
+
+        // 2. Core Functionality: Switch Tab
+        /**
+         * Switches the active tab based on the provided tab number.
+         * @param {number} tabNumber - The data-tab value of the tab to switch to (1, 2, or 3).
+         */
+        function switchToTab(tabNumber) {
+            const tabNumStr = String(tabNumber);
+
+            // Guard clause: Ensure the tab exists before proceeding
+            const newActiveButton = document.querySelector(`.tab[data-tab="${tabNumStr}"]`);
+            const newActiveContent = document.querySelector(`.content[data-tab="${tabNumStr}"]`);
+
+            if (!newActiveButton || !newActiveContent) {
+                console.warn(`Tab with data-tab="${tabNumStr}" not found.`);
+                return;
+            }
+
+            // A. Remove 'active' class from current elements
+            tabButtons.forEach(button => {
+                button.classList.remove("active");
+            });
+            tabContents.forEach(content => {
+                content.classList.remove("active");
+            });
+
+            // B. Add 'active' class to new elements (Visual Highlight & Content Visibility)
+            newActiveButton.classList.add("active");
+            newActiveContent.classList.add("active");
+
+            // C. Custom Event: Broadcast when a tab is changed
+            const tabName = newActiveButton.textContent.trim();
+            const tabChangeEvent = new CustomEvent("tabChange", {
+                detail: {
+                    tabId: tabNumStr,
+                    tabName: tabName,
+                    timestamp: new Date().toISOString()
+                }
+            });
+
+            // Dispatch the custom event from the main container
+            tabsContainer.dispatchEvent(tabChangeEvent);
+        }
+
+        // 3. Event Delegation for Tab Clicks
+        tabHeadersContainer.addEventListener("click", (e) => {
+            if (e.target.classList.contains("tab")) {
+                const tabNumber = e.target.getAttribute("data-tab");
+                switchToTab(Number(tabNumber));
+            }
+        });
+
+        // 4. Custom Event Listener (Logging to Console)
+        tabsContainer.addEventListener("tabChange", (e) => {
+            console.log("-----------------------------------------");
+            console.log(`[Custom Event] Tab changed!`);
+            console.log(`New Tab ID: ${e.detail.tabId}`);
+            console.log(`New Tab Name: "${e.detail.tabName}"`);
+            console.log(`Time: ${e.detail.timestamp}`);
+            console.log("-----------------------------------------");
+        });
+
+        // 5. Keyboard Shortcut Implementation
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "1" || e.key === "2" || e.key === "3") {
+                // Ensure focus isn't on an input field to prevent unwanted behavior
+                if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                    // e.preventDefault(); // Uncomment if you want to prevent browser's default key actions
+                    const tabNumber = Number(e.key);
+                    switchToTab(tabNumber);
+                }
+            }
+        });
+
+        // Initial console log to confirm script started
+        console.log("Tab Component Logic Loaded. Try clicking tabs or pressing keys '1', '2', or '3'.");
+        // Optionally, call switchToTab(1) to ensure initial state is correctly set if CSS fails to do so
+        // Note: The HTML already sets tab 1 as active, so this isn't strictly necessary but good for robustness.
+        // switchToTab(1);
+        // --- END OF JAVASCRIPT LOGIC ---
+    </script>
+</body>
+</html>
