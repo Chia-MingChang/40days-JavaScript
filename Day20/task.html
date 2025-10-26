@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-menu li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu li:hover {
+            background-color: #e9ecef;
+        }
+
+        .nav-menu li.active {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .performance-lists {
+            display: flex;
+            gap: 20px;
+        }
+
+        .performance-list {
+            flex: 1;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .clone-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .clone-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        #observer-target {
+            padding: 15px;
+            border: 2px dashed #007bff;
+            margin: 10px 0;
+        }
+
+        #observer-log {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        mark {
+            background-color: #ffd700;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+    </style>
+    <title>DOM Manipulation Examples</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Task 1: Navigation Menu -->
+        <div class="section">
+            <h2>1. Navigation Menu</h2>
+            <ul class="nav-menu">
+                <li>Home</li>
+                <li>About</li>
+                <li>Services</li>
+                <li>Contact</li>
+            </ul>
+        </div>
+
+        <!-- Task 2: Text Highlighter -->
+        <div class="section">
+            <h2>2. Text Highlighter</h2>
+            <p id="highlight-text">This is a sample paragraph. Try selecting any portion of this text to highlight it
+                using the Range API.</p>
+            <button id="highlight-btn">Highlight Selection</button>
+        </div>
+
+        <!-- Task 3: Performance Comparison -->
+        <div class="section">
+            <h2>3. Performance Comparison</h2>
+            <button id="add-regular">Add Items (Regular)</button>
+            <button id="add-fragment">Add Items (Fragment)</button>
+            <div class="performance-lists">
+                <div id="regular-list" class="performance-list">
+                    <h3>Regular DOM</h3>
+                </div>
+                <div id="fragment-list" class="performance-list">
+                    <h3>Document Fragment</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 4: Smart Cloner -->
+        <div class="section">
+            <h2>4. Smart Cloner</h2>
+            <div class="clone-container">
+                <div id="original" class="clone-item">
+                    Original Element
+                    <span>With nested content</span>
+                </div>
+                <button id="clone-deep">Clone Deep</button>
+                <button id="clone-shallow">Clone Shallow</button>
+                <div id="clones"></div>
+            </div>
+        </div>
+
+        <!-- Task 5: MutationObserver -->
+        <div class="section">
+            <h2>5. MutationObserver</h2>
+            <div id="observer-target">
+                Observed Element
+            </div>
+            <button id="add-child">Add Child</button>
+            <button id="change-class">Toggle Class</button>
+            <button id="modify-text">Modify Text</button>
+            <div id="observer-log"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {//loadDOM before implimentimg inner program
+            // Task 1: Navigation Menu
+            const listItems = document.querySelectorAll('.nav-menu li'); //select all <li> element in .nav-menu and return a Nodelist
+            listItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const parentUl = this.closest('ul');
+                    const allLi = parentUl.querySelectorAll('li');
+                    allLi.forEach(li => li.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            listItems[0].classList.add('active');//default the 1st <li> as active
+
+            // Task 2: Text Highlighter
+            const highlightBtn = document.getElementById('highlight-btn');
+            highlightBtn.addEventListener('click', () => {
+                const selection = window.getSelection();
+                if (!selection.isCollapsed) {//if the user selects
+                    const range = selection.getRangeAt(0);//select the 1st range
+                    const mark = document.createElement('mark'); //create a new element:<mark>
+                    range.surroundContents(mark);//put the selected range into <mark>
+                    selection.removeAllRanges();
+                }
+            });
+
+            // Task 3: Performance Comparison
+            const addRegularBtn = document.getElementById('add-regular');
+            const addFragmentBtn = document.getElementById('add-fragment');
+            const regularList = document.getElementById('regular-list');
+            const fragmentList = document.getElementById('fragment-list');
+
+            addRegularBtn.addEventListener('click', () => {
+                console.time('Regular DOM');
+                for (let i = 0; i < 100; i++) {
+                    const li = document.createElement('div');
+                    li.textContent = `Item ${i + 1}`;
+                    regularList.appendChild(li);
+                }
+                console.timeEnd('Regular DOM');
+            });
+
+            addFragmentBtn.addEventListener('click', () => {
+                console.time('Document Fragment');
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < 100; i++) {
+                    const li = document.createElement('div');
+                    li.textContent = `Item ${i + 1}`;
+                    fragment.appendChild(li);
+                }
+                fragmentList.appendChild(fragment);
+                console.timeEnd('Document Fragment');
+            });
+            /*+----------------------------+----------------------+--------------------------+------------+
+            |          Method           | DOM Operation Count  | Reflow/Repaint Count     | Performance|
+            +----------------------------+----------------------+--------------------------+------------+
+            | Direct appendChild        | 100 times            |           100 times      | Slow       |
+            | Using DocumentFragment    |100 times(in memory)+1 DOM|       1 time         | Fast       |
+            +----------------------------+----------------------+--------------------------+------------+
+            */
+            // Task 4: Smart Cloner
+            const cloneDeepBtn = document.getElementById('clone-deep');//複製整個原始元素（包含子元素）並顯示
+            const cloneShallowBtn = document.getElementById('clone-shallow');//只複製原始元素本身（不包含子元素）並顯示
+            const original = document.getElementById('original');
+            const clonesContainer = document.getElementById('clones');
+
+            cloneDeepBtn.addEventListener('click', () => {
+                const clone = original.cloneNode(true);//深層複製：包含所有子節點
+                clone.id = '';//清除 id，避免重複
+                clone.style.backgroundColor = '#e9ecef';//改變背景色以區分
+                clone.prepend('Deep Clone: ');//在最前面插入文字
+                clonesContainer.appendChild(clone);//加入到容器中
+            });
+
+            cloneShallowBtn.addEventListener('click', () => {
+                const clone = original.cloneNode(false);
+                clone.id = '';// 清除 id
+                clone.style.backgroundColor = '#f8d7da';
+                clone.textContent = 'Shallow Clone (no children)';// 直接設定文字內容
+                clonesContainer.appendChild(clone);//加入到容器中
+            });
+
+            // Task 5: MutationObserver
+            // 取得要監控的目標元素
+            const observerTarget = document.getElementById('observer-target');
+
+            // 取得用來顯示變化紀錄的容器
+            const observerLog = document.getElementById('observer-log');
+
+            // 三個按鈕：新增子節點、變更 class、修改文字
+            const addChildBtn = document.getElementById('add-child');
+            const changeClassBtn = document.getElementById('change-class');
+            const modifyTextBtn = document.getElementById('modify-text');
+
+
+            // 建立 MutationObserver，監聽 DOM 變化
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    const log = document.createElement('div'); // 建立一個 log 元素
+
+                    // 根據變化類型分類處理
+                    switch (mutation.type) {
+                        case 'childList': // 子節點新增或移除
+                            if (mutation.addedNodes.length > 0) {
+                                log.textContent = '➕ Child node added';
+                            }
+                            break;
+                        case 'attributes': // 屬性變更（例如 class）
+                            log.textContent = '🔄 Class attribute changed';
+                            break;
+                        case 'characterData': // 文字節點內容變更
+                            log.textContent = '✏️ Text content modified';
+                            break;
+                    }
+
+                    // 將 log 插入到紀錄區最前面
+                    observerLog.prepend(log);
+                });
+            });
+// 啟動監聽，設定監控項目
+            observer.observe(observerTarget, {
+                childList: true,//監控子節點新增/移除
+                attributes: true,// 監控屬性變更（如 class
+                characterData: true,// 監控文字節點內容變更
+                subtree: true// 包含所有子元素的變化
+            });
+// 點擊後新增一個子節點，觸發 childList 變化
+            addChildBtn.addEventListener('click', () => {
+                const child = document.createElement('div');
+                child.textContent = 'New Child';
+                observerTarget.appendChild(child);
+            });
+// 點擊後切換 class，觸發 attributes 變化
+            changeClassBtn.addEventListener('click', () => {
+                observerTarget.classList.toggle('highlighted');
+            });
+// 點擊後修改文字節點內容，觸發 characterData 變化
+            modifyTextBtn.addEventListener('click', () => {
+                if (observerTarget.firstChild.nodeType === Node.TEXT_NODE) {
+                    observerTarget.firstChild.textContent = 'Modified Text: ' + new Date().toLocaleTimeString();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
