@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .recipe {
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-title {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .recipe-details {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+        }
+
+        .recipe-details.show {
+            max-height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Recipe Finder</h1>
+        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search receipes...">
+            <button id="clearBtn">Clear</button>
+        </div>
+        <div id="recipeList"></div>
+    </div>
+    <script>
+        //set default list of Dummy Data
+        const recipes = [{ title: "Spaghetti Carbonara", ingredients: ["Spaghetti", "Eggs", "Parmesan Cheese", "Bacon"], instructions: "Cook pasta. Mix with eggs and cheese. Add bacon." }, { title: "Chicken Curry", ingredients: ["Chicken", "Curry Powder", "Onions", "Tomatoes"], instructions: "Cook onions, add chicken, spices, and tomatoes." }, { title: "Grilled Cheese Sandwich", ingredients: ["Bread", "Cheddar Cheese", "Butter"], instructions: "Butter bread, place cheese between slices, and grill." }, { title: "Veggie Stir Fry", ingredients: ["Broccoli", "Carrots", "Bell Peppers", "Soy Sauce"], instructions: "Stir fry vegetables and add soy sauce." }];
+
+        // 取得 HTML 中用來放置食譜列表的容器
+        const recipeList = document.getElementById('recipeList');
+
+        /**
+         * 顯示食譜清單的主要函式
+         * @param {Array} recipesToShow - 要顯示的食譜陣列（可能是全部或篩選後的）
+         */
+        function displayRecipes(recipesToShow) {
+            // 先清空容器，避免重複顯示
+            recipeList.innerHTML = '';
+
+            // 如果沒有符合條件的食譜，顯示「No recipes found」訊息
+            if (recipesToShow.length === 0) {
+                recipeList.innerHTML = '<p>No recipes found.</p>';
+                return; // 結束函式，不再往下執行
+            }
+
+            // 用 forEach 逐一處理每一個食譜物件
+            recipesToShow.forEach(recipe => {
+                // 建立外層的 <div> 元素，代表一個食譜卡片
+                const recipeDiv = document.createElement('div');
+                recipeDiv.classList.add('recipe'); // 加上樣式 class
+
+                // 建立食譜標題元素
+                const title = document.createElement('div');
+                title.classList.add('recipe-title'); // 標題樣式
+                title.textContent = recipe.title;    // 顯示食譜名稱
+
+                // 建立食譜詳細內容區塊（食材與步驟）
+                const details = document.createElement('div');
+                details.classList.add('recipe-details'); // 預設隱藏，需點擊後展開
+                details.innerHTML = `
+      <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>
+      <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+    `;
+
+                // 點擊標題時，展開或收起詳細內容
+                title.addEventListener('click', () => {
+                    details.classList.toggle('show'); // 切換 CSS class 來控制動畫顯示
+                });
+
+                // 把標題與詳細內容加進食譜卡片中
+                recipeDiv.appendChild(title);
+                recipeDiv.appendChild(details);
+
+                // 最後把整個食譜卡片加到頁面上
+                recipeList.appendChild(recipeDiv);
+            });
+        }
+
+        // 初始顯示所有食譜（第一次載入頁面時）
+        displayRecipes(recipes);
+        //Step4 Add function of search
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function filterRecipes(keyword) {
+            const filtered = recipes.filter(recipe =>
+                recipe.title.toLowerCase().includes(keyword.toLowerCase())
+            );
+            displayRecipes(filtered);
+        }
+
+        // 即時搜尋
+        searchInput.addEventListener('input', e => {
+            const value = e.target.value;
+            localStorage.setItem('lastSearch', value);
+            filterRecipes(value);
+        });
+
+        // 清除搜尋
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            localStorage.removeItem('lastSearch');
+            displayRecipes(recipes);
+        });
+        //step5 keep searching record
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSearch = localStorage.getItem('lastSearch');
+            if (savedSearch) {
+                searchInput.value = savedSearch;
+                filterRecipes(savedSearch);
+            } else {
+                displayRecipes(recipes);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
