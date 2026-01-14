@@ -1,0 +1,31 @@
+<!-- ## 3. Send a `POST` request to `https://jsonplaceholder.typicode.com/posts` with a new post (title, body, userId). Show the response in console -->
+async function createPost(){
+    const url  = 'https://jsonplaceholder.typicode.com/posts';
+
+
+const newPost = {
+    title:'My new article',
+    body:'Rhis is the discription of content',
+    userId:1
+};
+
+try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(newPost),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+
+    const result = await response.json();
+    
+    // 成功後，伺服器會回傳你剛剛發送的內容，並附帶一個新的 id (通常是 101)
+    console.log('Server response：', result);
+    
+  } catch (error) {
+    console.error('reponse failure：', error);
+  }
+}
+
+createPost();
