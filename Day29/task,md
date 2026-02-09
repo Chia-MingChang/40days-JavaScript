@@ -1,0 +1,267 @@
+# Tasks
+
+Please complete the following tasks and post them on the tapaScript Discord under "40 Days of JavaScript".
+
+> **DO NOT USE AI to FIND ANSWERS**. If you are stuck, let's discuss it on DISCORD and learn. Also, please note that none of the answers need you to create any UI. Just focus on the logic building and print the output on the browser console.
+
+## 1. Identify Real-Life Objects with OOP Concepts
+
+Pick any 3 real-life objects (e.g., smartphone, bicycle, school), and for each:
+
+- List at least 3 properties (attributes).
+- List at least 3 behaviors (methods).
+- Write which OOP principle each property or behavior best represents and why.
+smartphone
+	properties Encapsulation camera, screen, Speaker; behaviors photograph() → Abstraction-don’t need to know the low-level details, just call the function., call()->Polymorphism-Calling can be implemented differently depending on context (voice call, video call, VoIP call). Polymorphism allows the same method name call() to behave differently depending on the type of call or subclass.,surftheinternet()
+camera, screen, speaker	Encapsulation	Attributes bundled inside the smartphone object
+┌─────────────────────────┬─────────────────┬───────────────────────────────────────────────┐
+│ Property / Behavior     │ OOP Principle   │ Explanation                                    │
+├─────────────────────────┼─────────────────┼───────────────────────────────────────────────┤
+│ camera, screen, speaker │ Encapsulation   │ Attributes bundled inside the smartphone class │
+│ photograph()            │ Abstraction     │ Hides complex photo-taking, exposes simple API │
+│ call()                  │ Polymorphism    │ Same method name supports multiple call types  │
+│ surfTheInternet()       │ Inheritance     │ Inherits computing/networking ability          │
+└─────────────────────────┴─────────────────┴───────────────────────────────────────────────┘
+## 2. Draw a Diagram of an OOP Modeled System
+
+Create a diagram (hand-drawn or digital) of a system like:
+
+- A library system (Books, Members, Staff, etc.)
+- Or a fast-food restaurant system (Orders, Menus, Employee)
+In the diagram Show classes/objects
+
+- Arrows to represent relationships like inheritance or composition
+- Indicate which class encapsulates what data and methods
+                ┌─────────────────────┐
+                │       Menu          │
+                ├─────────────────────┤
+                │ - items             │
+                │ - prices            │
+                ├─────────────────────┤
+                │ + showMenu()        │
+                │ + updateItem()      │
+                └───────────┬─────────┘
+                            │  (composition: Order uses Menu)
+                            ▼
+                ┌─────────────────────┐
+                │       Order         │
+                ├─────────────────────┤
+                │ - orderID           │
+                │ - items             │
+                │ - totalPrice        │
+                ├─────────────────────┤
+                │ + addItem()         │
+                │ + calculateTotal()  │
+                │ + printReceipt()    │
+                └───────────┬─────────┘
+                            │  (association: Employee handles Order)
+                            ▼
+                ┌─────────────────────┐
+                │     Employee        │
+                ├─────────────────────┤
+                │ - empID             │
+                │ - name              │
+                │ - role              │
+                ├─────────────────────┤
+                │ + takeOrder()       │
+                │ + serveFood()       │
+                │ + manageMenu()      │
+                └───────────┬─────────┘
+                            │  (inheritance)
+        ┌───────────────────┴───────────────────┐
+        ▼                                       ▼
+┌─────────────────────┐                ┌─────────────────────┐
+│      Cashier        │                │       Cook          │
+├─────────────────────┤                ├─────────────────────┤
+│ + processPayment()  │                │ + prepareFood()     │
+└─────────────────────┘                └─────────────────────┘
+Menu encapsulates items and prices with methods to show/update.
+
+Order encapsulates orderID, items, and totalPrice with methods to add/calculate/print.
+
+Employee encapsulates staff data and methods for interacting with orders and menus.
+
+Cashier and Cook inherit from Employee, each encapsulating specialized behaviors.
+Employee class defines general methods like serveFood() or takeOrder().
+Cashier and Cook inherit from Employee but override those methods:
+Cashier.serveFood() → might mean handing the tray to the customer.
+Cook.serveFood() → might mean plating the dish in the kitchen.
+Both use the same method name (serveFood()), but the behavior changes depending on the object type. That’s runtime polymorphism (method overriding).
+It could also have compile-time polymorphism (method overloading), for example:
+Order.addItem(itemID)
+
+Order.addItem(itemID, quantity)
+## 3. Explain OOP Principles with Human Analogies
+
+ Write your own analogy (non-code) to explain each of the 5 OOP principles:
+
+- Abstraction → Menu hides complexity.
+- Encapsulation →Cash register protects internal details.
+- Inheritance →Employees share traits but specialize.
+- Polymorphism → Same action, different roles.
+- Composition →Orders are built from menu items.
+
+It must be unique (not from the class), and explain how that analogy relates to programming.
+Abstraction
+Analogy: Customers only see the menu board with pictures and prices. They don’t see the recipe, supply chain, or kitchen workflow.
+Programming link: In OOP, abstraction hides the complex implementation (like algorithms or hardware calls) and exposes only the interface (methods such as orderBurger()).
+
+🥤 Encapsulation
+Analogy: The soda machine has buttons for Coke, Sprite, etc. Inside, it has pipes, syrups, and carbonation tanks, but customers only interact with the button.
+Programming link: Encapsulation bundles data (ingredients) and methods (dispense drink) inside a class, while restricting direct access to internal details.
+
+👨‍🍳 Inheritance
+Analogy: All employees wear uniforms and follow basic rules, but a cashier specializes in handling payments, while a cook specializes in preparing food.
+Programming link: Subclasses inherit common attributes (like employeeID) from a parent Employee class, but extend or override with specialized methods (processPayment() vs. prepareFood()).
+
+🍟 Polymorphism
+Analogy: The instruction “serve food” means different things depending on who does it:
+
+For a cashier, it’s handing a tray to the customer.
+
+For a cook, it’s plating the dish in the kitchen.
+Programming link: Polymorphism allows the same method name (serveFood()) to behave differently depending on the object type at runtime.
+
+🥗 Composition
+Analogy: An order is made up of multiple menu items (burger, fries, drink). Without items, there is no order.
+Programming link: Composition means building complex objects (Order) from simpler ones (MenuItem), showing a “has‑a” relationship rather than “is‑a.”
+## 4. Compare OOP vs Functional Thinking
+
+Choose a simple system (e.g., a To-Do app or Alarm Clock) and:
+
+- Describe how you’d design it using OOP (with objects)
+- Describe how you’d design it using Functional Programming (with functions)
+
+You don’t have to write code — just use words and bullets.
+Class: AlarmClock
+
+Properties (data encapsulated):
+
+currentTime
+
+alarms (list of alarm objects)
+
+isRinging
+
+Methods (behaviors):
+
+setAlarm(time)
+
+ringAlarm()
+
+stopAlarm()
+
+snooze()
+
+Class: Alarm
+
+Properties:
+
+alarmTime
+
+repeatDays
+
+tone
+
+Methods:
+
+activate()
+
+deactivate()
+
+Relationships:
+
+Composition: An AlarmClock has multiple Alarm objects.
+
+Encapsulation: Internal timekeeping logic is hidden; users only interact through methods.
+
+Inheritance (optional): Specialized alarms (e.g., VibrationAlarm, MusicAlarm) could inherit from Alarm.
+
+👉 In OOP, the focus is on objects that bundle state and behavior, mirroring how a real alarm clock is a device with parts working together.
+
+🔹 Functional Programming Design (FP)
+We model the alarm clock as a set of pure functions that transform data:
+
+Functions:
+
+getCurrentTime() → returns the current time.
+
+setAlarm(alarms, newAlarm) → returns a new list of alarms with the new one added.
+
+checkAlarms(currentTime, alarms) → returns alarms that should ring now.
+
+ringAlarm(alarm) → triggers the ringing action.
+
+stopAlarm(alarm) → returns updated state with alarm stopped.
+
+snooze(alarm, minutes) → returns a new alarm time shifted forward.
+
+Data Structures:
+
+alarms is just a list of records (e.g., {time, repeatDays, tone}).
+
+State is passed into and out of functions rather than stored inside objects.
+
+👉 In FP, the focus is on functions that take input and return output, with no hidden state. The alarm clock is modeled as transformations of data rather than entities with identity.
+## 5. Object vs Class vs Function – Explain Like a Teacher
+
+Imagine you’re teaching a 10-year-old:
+
+- What is a Class?
+- What is an Object?
+- What is a Function?
+
+Use simple language, drawings, or emojis if needed.
+Think of a Class like a blueprint or a recipe.
+
+A recipe shows how to make cookies: what ingredients you need, and what steps to follow.
+
+But the recipe itself is not a cookie—it’s just instructions.
+
+👉 In programming, a Class is the recipe that describes what something should look like and what it can do.
+
+Example:
+
+Class: Dog
+- Has: name, color, age
+- Can do: bark, run, wag tail
+🐶 Object
+An Object is the actual cookie baked from the recipe.
+
+If the class is "Dog," then an object is a real dog like Snoopy 🐾 or Lassie.
+
+Each object is unique, but they all follow the same recipe (class).
+
+👉 In programming, an Object is something created from a class, with real values.
+
+Example:
+
+text
+Object: Snoopy
+- Name: Snoopy
+- Color: White
+- Age: 3
+⚙️ Function
+A Function is like a machine or tool that does a job when you ask it.
+
+Imagine a toaster: you put bread in, press the button, and it gives you toast. 🍞➡️🍞🔥➡️🍞🍯
+
+A function takes input, does something, and gives you output.
+
+👉 In programming, a Function is a reusable piece of code that performs a task.
+
+Example:
+
+text
+Function: bark()
+- Snoopy uses it → "Woof! 🐕"
+🎨 Quick Drawing Analogy
+
+Class = Recipe 📖
+Object = Cookie 🍪
+Function = Kitchenware 🔥
+Recipe (Class) → tells how cookies are made.
+
+Cookie (Object) → the real thing you can eat.
+
+Kitchenware (Function) → does the work to bake cookies.
