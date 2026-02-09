@@ -258,9 +258,9 @@ Function: bark()
 🎨 Quick Drawing Analogy
 
 Class = Recipe 📖
-Object = Cookie 🍪
+Object = Cusine 🍪
 Function = Kitchenware 🔥
-Recipe (Class) → tells how cookies are made.
+Recipe (Class) → tells how cusines are made.
 
 Cookie (Object) → the real thing you can eat.
 
