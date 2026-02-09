@@ -214,9 +214,9 @@ Imagine you’re teaching a 10-year-old:
 Use simple language, drawings, or emojis if needed.
 Think of a Class like a blueprint or a recipe.
 
-A recipe shows how to make cookies: what ingredients you need, and what steps to follow.
+A recipe shows how to make cusines: what ingredients you need, and what steps to follow.
 
-But the recipe itself is not a cookie—it’s just instructions.
+But the recipe itself is not a cusine—it’s just instructions.
 
 👉 In programming, a Class is the recipe that describes what something should look like and what it can do.
 
@@ -226,7 +226,7 @@ Class: Dog
 - Has: name, color, age
 - Can do: bark, run, wag tail
 🐶 Object
-An Object is the actual cookie baked from the recipe.
+An Object is the actual cusine baked from the recipe.
 
 If the class is "Dog," then an object is a real dog like Snoopy 🐾 or Lassie.
 
