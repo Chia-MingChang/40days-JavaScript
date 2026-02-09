@@ -262,6 +262,6 @@ Object = Cusine 🍪
 Function = Kitchenware 🔥
 Recipe (Class) → tells how cusines are made.
 
-Cookie (Object) → the real thing you can eat.
+a specigic Cusine like Tommato_Pasta, Beef_noodle, pieapple_cake etc. (Object) → the real thing you can eat.
 
-Kitchenware (Function) → does the work to bake cookies.
+Kitchenware (Function) → does the work to make cusine(s).
