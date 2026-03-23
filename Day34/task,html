@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Book System - Final Version</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; color: #1c1e21; }
+        .container { max-width: 900px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .book-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid #28a745; transition: transform 0.2s; }
+        .book-card:hover { transform: translateY(-5px); }
+        .book-card.borrowed { border-top-color: #dc3545; }
+        .book-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; height: 3rem; display: flex; align-items: center; }
+        button { cursor: pointer; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; width: 100%; transition: opacity 0.2s; }
+        .borrow-btn { background-color: #28a745; color: white; }
+        .return-btn { background-color: #dc3545; color: white; }
+        button:hover { opacity: 0.9; }
+        .member-info { background: #e7f3ff; padding: 10px 20px; border-radius: 20px; color: #1877f2; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📚 Member Library</h1>
+        <div id="user-badge" class="member-info">Member: User_001</div>
+    </div>
+
+    <h2>Available for You</h2>
+    <div id="available-list" class="book-grid"></div>
+
+    <h2>Your Current Borrows</h2>
+    <div id="borrowed-list" class="book-grid"></div>
+</div>
+
+<script>
+    /**
+     * 1. Utilities for Data & Storage Logic
+     */
+    const CURRENT_MEMBER = "User_001"; // Mock member ID
+
+    const Utils = {
+        storage: {
+            // Get data specific to this member
+            getMemberData: (key, fallback) => {
+                const data = localStorage.getItem(`${CURRENT_MEMBER}_${key}`);//string only
+                return data ? JSON.parse(data) : fallback;
+            },
+            // Save data specific to this member
+            saveMemberData: (key, data) => {
+                localStorage.setItem(`${CURRENT_MEMBER}_${key}`, JSON.stringify(data));//string only
+            }
+        },
+        // Generic logic to move an item between two arrays
+        transferItem: (fromArr, toArr, bookId) => {
+            const index = fromArr.findIndex(b => b.id === bookId);
+            if (index !== -1) {
+                const [item] = fromArr.splice(index, 1);//use [item] as splice() returns an array; item assigned the only one value from the list 
+                toArr.push(item);
+                return true;
+            }
+            return false;
+        }
+    };
+
+    /**
+     * 2. Initial Data & State Loading
+     */
+    const defaultBooks = [
+        { id: 101, title: "Clean Architecture" },
+        { id: 102, title: "Refactoring" },
+        { id: 103, title: "The Pragmatic Programmer" },
+        { id: 104, title: "Don't Make Me Think" }
+    ];
+
+    // Preserve the state by loading from LocalStorage for this member
+    let availableBooks = Utils.storage.getMemberData('available', defaultBooks);
+    let borrowedBooks = Utils.storage.getMemberData('borrowed', []);
+
+    /**
+     * 3. UI Rendering Engine
+     */
+    function render() {
+        const availableEl = document.getElementById('available-list');
+        const borrowedEl = document.getElementById('borrowed-list');
+
+        // Build HTML for Available Books
+        availableEl.innerHTML = availableBooks.map(book => `
+            <div class="book-card">
+                <div class="book-title">${book.title}</div>
+                <button class="borrow-btn" onclick="handleAction('borrow', ${book.id})">Borrow This Book</button>
+            </div>
+        `).join('');
+
+        // Build HTML for Borrowed Books
+        borrowedEl.innerHTML = borrowedBooks.map(book => `
+            <div class="book-card borrowed">
+                <div class="book-title">${book.title}</div>
+                <button class="return-btn" onclick="handleAction('return', ${book.id})">Return Book</button>
+            </div>
+        `).join('');
+
+        // Persist all book data to LocalStorage after every change
+        Utils.storage.saveMemberData('available', availableBooks);
+        Utils.storage.saveMemberData('borrowed', borrowedBooks);
+    }
+
+    /**
+     * 4. Unified Action Controller
+     */
+    function handleAction(actionType, id) {
+        const isSuccess = (actionType === 'borrow')
+            ? Utils.transferItem(availableBooks, borrowedBooks, id)
+            : Utils.transferItem(borrowedBooks, availableBooks, id);
+        
+        if (isSuccess) render();
+    }
+
+    // First time render on page load
+    document.addEventListener('DOMContentLoaded', render);
+</script>
+
+</body>
+</html>
