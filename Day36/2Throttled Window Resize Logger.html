@@ -1,0 +1,81 @@
+<!-- Throttled Window Resize Logger -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throttled Window Resize Logger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s;
+        }
+        #dimensions {
+            font-size: 2em;
+            padding: 20px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+        .mobile { background-color: lightblue; }
+        .tablet { background-color: lightgreen; }
+        .desktop { background-color: lightcoral; }
+    </style>
+</head>
+<body>
+    <div id="dimensions">Resize the window</div>
+    <script>
+        function throttle(fn, delay) {
+            let lastCall = 0;
+            return function (...args) {
+                const now = Date.now();
+                if (now - lastCall >= delay) {
+                    lastCall = now;
+                    fn.apply(this, args);
+                }
+            };
+        }
+        // throttle function: Limits how often a function can be called. It ensures the wrapped function is executed at most once every 'delay' milliseconds.
+
+        function updateDimensions() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const dimensionsText = `${width} × ${height}`;
+            document.getElementById('dimensions').textContent = dimensionsText;
+            console.log(dimensionsText);
+
+            // Remove previous classes
+            document.body.classList.remove('mobile', 'tablet', 'desktop');
+            document.getElementById('dimensions').classList.remove('mobile', 'tablet', 'desktop');
+
+            // Add category class
+            if (width < 768) {
+                document.body.classList.add('mobile');
+                document.getElementById('dimensions').classList.add('mobile');
+            } else if (width <= 1024) {
+                document.body.classList.add('tablet');
+                document.getElementById('dimensions').classList.add('tablet');
+            } else {
+                document.body.classList.add('desktop');
+                document.getElementById('dimensions').classList.add('desktop');
+            }
+        }
+        // updateDimensions function: Gets current window dimensions, updates the display div, logs to console, and applies CSS classes based on screen size category.
+
+        const throttledResize = throttle(updateDimensions, 250);
+        // throttledResize: A throttled version of updateDimensions that runs at most every 250ms.
+
+        window.addEventListener('resize', throttledResize);
+        // Event listener: Calls throttledResize on window resize events.
+
+        // Initial call
+        updateDimensions();
+        // Initial call: Runs updateDimensions once on page load to show initial dimensions.
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleanup Event Listeners Demo</title>
+    <style>
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content { background: #fff; padding: 30px; border-radius: 8px; text-align: center; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+
+    <button id="openBtn">Open Modal</button>
+
+    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Memory Leak Prevention</h2>
+            <p>Press <strong>Esc</strong> to close this modal.</p>
+            <button id="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Move the script here so the DOM elements exist when the code runs
+        const openBtn = document.getElementById('openBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        // 1. Named function is required for removeEventListener to work
+        const handleEscapeKey = (event) => {
+            console.log(`[Active] Key pressed: ${event.key}`);
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        };
+
+        // 2. Open function: Adds the listener
+        function openModal() {
+            modalOverlay.style.display = 'flex';
+            window.addEventListener('keydown', handleEscapeKey);
+            console.log('🔔 Event Listener Added: Global Keydown');
+        }
+
+        // 3. Close function: Removes the listener (The Cleanup)
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+            // ✅ SUCCESS: The listener is detached from memory
+            window.removeEventListener('keydown', handleEscapeKey);
+            console.log('✅ Cleanup: Keyboard listener successfully removed.');
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+    </script>
+</body>
+</html>
