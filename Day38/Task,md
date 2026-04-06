@@ -1,0 +1,92 @@
+# Tasks
+
+Please complete the following tasks and post them on the tapaScript Discord under "40 Days of JavaScript".
+
+## 1. Identify Reachable vs Unreachable Objects
+
+Write a small program where:
+
+- You create an object user
+- Create a second object profile that references user
+- Then set user = null
+
+Is the original user object still reachable? Why or why not?
+
+let user = {
+    id:1234,
+    name:"John"
+};
+let profile = user;
+console.log(profile);
+console.log(user===profile);
+let user = null;
+console.log(user);
+
+Yes, the original user object is still reachable.
+In JavaScript, objects are stored and accessed by reference. When you write let profile = user;, you aren't copying the data; you are creating a second pointer to the same memory address.
+Even after you set user = null, the profile variable still holds that reference. The object remains in memory because JavaScript's Garbage Collector only removes an object when there are zero references pointing to it.
+Since profile still points to the object, you can still access { id: 1234, name: "John" } through it.
+## 2. Simulate and Break a Cyclic Reference
+
+Observe how cyclic references can cause memory retention.
+
+- Create two objects a and b
+- Make them reference each other (a.ref = b and b.ref = a)
+- Nullify external references to both
+
+Explain why this may or may not cause a memory leak. Add a.ref = null; b.ref = null; and explain how it helps
+
+let a = { id: 1 };
+let b = { id: 2 };
+
+// 1. Create cyclic reference
+a.ref = b;
+b.ref = a;
+
+// 2. Break the cycle (Optional but helpful for old GCs)
+a.ref = null;
+b.ref = null;
+
+// 3. Nullify external references (Crucial for memory recovery)
+a = null;
+b = null;
+
+
+console.log(b);
+console.log(a);
+
+## 3. DOM Leak Detection and Fix
+
+Learn how DOM elements and closures can create memory leaks.
+
+- Create a button using JavaScript
+- Add an event listener that references a variable outside the listener
+- Remove the button from the DOM, but not the event listener
+
+Identify the leak & fix it.
+
+function createLeakingButton() {
+  const largeData = new Array(1000000).fill('💣'); // Simulates a large memory footprint
+  const btn = document.createElement('button');
+  btn.innerText = 'Click Me';
+
+  // The Closure: The listener keeps a reference to 'largeData' from the outer scope
+  btn.addEventListener('click', function() {
+    console.log('Data length:', largeData.length);
+  });
+
+  document.body.appendChild(btn);
+
+  // Simulating removing the button from the DOM
+  setTimeout(() => {
+    document.body.removeChild(btn);
+    console.log('Button removed from DOM, but the listener and largeData persist in memory!');
+  }, 2000);
+}
+
+createLeakingButton();
+
+Why does this leak?
+Persistent References: The Garbage Collector only deletes objects it can no longer "reach."
+Closure Retention: Because the event listener function is still attached to the btn object, it holds onto the largeData variable via the closure.
+Dangling Object: Since the listener wasn't explicitly removed using removeEventListener, the btn object (and everything it references) stays in memory as long as the listener exists.
