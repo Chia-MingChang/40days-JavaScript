@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization Demo</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .controls { margin-bottom: 20px; position: sticky; top: 0; background: white; padding: 10px 0; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 4px 10px; border-bottom: 1px solid #eee; }
+        li:hover { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="sortBtn">Sort (A-Z)</button>
+        <button id="shuffleBtn">Shuffle</button>
+        <button id="filterBtn">Filter (Even IDs)</button>
+        <button id="resetBtn">Reset</button>
+        <span id="perfDisplay" style="margin-left: 15px; color: #666; font-weight: bold;"></span>
+    </div>
+
+    <ul id="itemList"></ul>
+
+    <!-- MOVE SCRIPT TO THE BOTTOM -->
+    <script>
+        const listContainer = document.getElementById('itemList');
+        const perfDisplay = document.getElementById('perfDisplay');
+
+        // Generate 1,000 items
+        const originalData = Array.from({ length: 1000 }, (_, i) => ({
+            id: i,
+            text: `Item #${i} - ${Math.random().toString(36).substring(7)}`
+        }));
+
+        let currentData = [...originalData];
+
+        function render(data) {
+            const startTime = performance.now();
+            console.time('DOM_Update');
+
+            // 1. Map existing DOM nodes for fast lookup
+            const existingNodes = new Map();
+            listContainer.querySelectorAll('li').forEach(node => {
+                existingNodes.set(node.dataset.id, node);
+            });
+
+            // 2. Create a Fragment (Batching)
+            const fragment = document.createDocumentFragment();
+
+            // 3. Diffing Logic: Reuse or Create
+            data.forEach(item => {
+                const stringId = item.id.toString();
+                let li;
+
+                if (existingNodes.has(stringId)) {
+                    li = existingNodes.get(stringId);
+                    existingNodes.delete(stringId); 
+                } else {
+                    li = document.createElement('li');
+                    li.dataset.id = stringId;
+                    li.textContent = item.text;
+                }
+                fragment.appendChild(li);
+            });
+
+            // 4. Cleanup: Remove nodes not in new data
+            existingNodes.forEach(node => node.remove());
+
+            // 5. Update UI
+            listContainer.innerHTML = ''; 
+            listContainer.appendChild(fragment);
+
+            const duration = (performance.now() - startTime).toFixed(2);
+            console.timeEnd('DOM_Update');
+            perfDisplay.textContent = `⚡ Rendered in ${duration}ms`;
+            
+            // Keep track of current state for sorting
+            currentData = data;
+        }
+
+        // Event Listeners
+        document.getElementById('sortBtn').onclick = () => {
+            const sorted = [...currentData].sort((a, b) => a.text.localeCompare(b.text));
+            render(sorted);
+        };
+
+        document.getElementById('shuffleBtn').onclick = () => {
+            const shuffled = [...currentData].sort(() => Math.random() - 0.5);
+            render(shuffled);
+        };
+
+        document.getElementById('filterBtn').onclick = () => {
+            const filtered = originalData.filter(item => item.id % 2 === 0);
+            render(filtered);
+        };
+
+        document.getElementById('resetBtn').onclick = () => {
+            render(originalData);
+        };
+
+        // Initial Render
+        render(originalData);
+    </script>
+</body>
+</html>
